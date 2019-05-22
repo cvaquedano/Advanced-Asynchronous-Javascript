@@ -20,14 +20,46 @@ class Observable{
         };
       });
     }
-  }
+    
+    static fromEvent(dom,eventName){ 
+      return new Observable(function subscribe(observer){
+        
+        const handler = (ev)=>{
+        observer.next(ev)
+         };
+        
+        dom.addEventListener(eventName,handler);
 
-  const obs = Observable.timeout(500);
-  obs.subscribe({
-      next(v){
-          console.log(v);
-      },
-      complete(){
-          console.log("Done")
-      }
-  })
+        return {
+          unsubscribe(){
+            dom.removeEventListener(eventName,handler)
+          }
+        }
+      });
+    }
+  }
+  
+  debugger;
+  
+   const obs = Observable.timeout(500);
+    obs.subscribe({
+        next(v){
+            console.log("next");
+        },
+        complete(){
+            console.log("Done")
+        }
+    });
+    
+   obs.subscribe({
+        next(v){
+            console.log("next");
+        },
+        complete(){
+            console.log("Done")
+        }
+    });
+  
+  
+    
+    
