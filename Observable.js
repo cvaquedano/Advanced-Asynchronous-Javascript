@@ -59,12 +59,36 @@ map(projection){
       }
     });
   }
+
+  filter(predicate){
+  const self = this;
+  return new Observable(function subsscribe(observer){
+    const subscription = self.subscribe({
+      next(v){
+      if(predicate(v)){
+        observer.next(v);
+      }
+                 
+      },
+      error(err){
+        observer.error(err);
+      },
+      complete(){
+        observer.complete();
+      }
+    });
+    
+    return subscription;
+  });
+}
+
 }
 
 const button = document.getElementById("button");
 const clicks = Observable.fromEvent(button,"click");
 
 clicks.map(ev => ev.offsetX).
+filter(offsetX => offsetX>10).
 subscribe({
 next(ev){
   console.log(ev);
