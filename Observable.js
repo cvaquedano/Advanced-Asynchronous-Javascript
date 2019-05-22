@@ -18,8 +18,30 @@ class Observable{
           clearTimeout(handle);
         }
       };
+      
     });
   }
+
+map(projection){
+  const self = this;
+  return new Observable(function subsscribe(observer){
+    const subscription = self.subscribe({
+      next(v){
+      
+          observer.next(projection(v));
+      
+      },
+      error(err){
+        observer.error(err);
+      },
+      complete(){
+        observer.complete();
+      }
+    });
+    
+    return subscription;
+  });
+}
   
   static fromEvent(dom,eventName){ 
     return new Observable(function subscribe(observer){
@@ -42,15 +64,15 @@ class Observable{
 const button = document.getElementById("button");
 const clicks = Observable.fromEvent(button,"click");
 
-
-  clicks.subscribe({
-      next(v){
-          console.log("next");
-      },
-      complete(){
-          console.log("Done")
-      }
-  });
+clicks.map(ev => ev.offsetX).
+subscribe({
+next(ev){
+  console.log(ev);
+},
+complete(){
+  console.log("Done")
+}
+});
   
 
 
